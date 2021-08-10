@@ -1,0 +1,49 @@
+﻿@model DevExpress.XtraReports.UI.XtraReport
+@*@using Microsoft.AspNetCore.Http
+@inject IHttpContextAccessor _httpContextAccessor*@
+
+@{
+    Layout = "~/Views/Shared/_DevExtremeLayout.cshtml";
+}
+
+<div id="docContainer">
+    @(Html.DevExpress()
+        .WebDocumentViewer("WebDocumentViewer")
+        .Height("100%")
+        .Bind(Model)
+    )
+</div>
+@*<div id="dynamic-form" style="display: none !important"></div>*@
+@section Scripts {
+    <script>
+        //document.title = "Test";
+        function setHeight() {
+            $("#docContainer").css("height", `${window.innerHeight}px`);
+        }
+        $(document).ready(_ => {
+            setHeight();
+            $(window).resize(_ => setHeight());
+            
+        });
+
+
+
+        @*function openReporteCalculoDivAgenteResumen(CodEmpresa, CodTipoDividendo, NroDividendo, UserName) {
+            console.log(CodEmpresa);
+            console.log(UserName);
+            api_url = '@_httpContextAccessor.HttpContext.Request.Host';
+            var div = $("#dynamic-form");
+            form = $("<form/>", { method: "post", target: "_blank", action: api_url + "/tools/ReporteDivCalAgenteDetalle" });
+            form.append($("<input>", { type: "text", value: CodEmpresa, name: "CodEmpresa" }));
+            form.append($("<input>", { type: "text", value: CodTipoDividendo, name: "CodTipoDividendo" }));
+            form.append($("<input>", { type: "text", value: NroDividendo, name: "NroDividendo" }));
+            form.append($("<input>", { type: "text", value: UserName, name: "UserName" }));
+            $(form).attr("action", api_url + "/tools/ReporteDivCalAgenteDetalle");
+            div.append(form);
+            form.submit();
+            div.empty();
+        }*@
+
+
+    </script>
+}

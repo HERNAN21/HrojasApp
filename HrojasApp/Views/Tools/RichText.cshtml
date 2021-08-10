@@ -1,0 +1,27 @@
+﻿@model HrojasApp.DTO.DocumentContentFromBytes
+@using DevExpress.AspNetCore.RichEdit;
+
+@{
+    Layout = "~/Views/Shared/_DevExtremeLayout.cshtml";
+}
+
+@(Html.DevExpress().RichEdit("TextDocument")
+    .ExportUrl(Url.Action("Export", "Tools"))
+    .Ribbon(r => r.ActiveTabIndex(0))
+    .Height("300px")
+    .ConfirmOnLosingChanges(c => c.Enabled(false))
+    .Open(Model.ContentAccessor, DocumentFormat.OpenXml)
+)
+
+@section Scripts {
+    <script>
+        function setHeight() {
+             let h = window.innerHeight - 120;
+                $("#_View").css("height", `${h}px`);
+        }
+        $(document).ready(_ => {
+            setHeight();
+            $(window).resize(_ => setHeight());
+        });
+    </script>
+}

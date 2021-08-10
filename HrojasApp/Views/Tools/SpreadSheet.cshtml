@@ -1,0 +1,86 @@
+﻿@model HrojasApp.DTO.DocumentContentFromBytes
+@using DevExpress.Spreadsheet;
+
+@{
+    Layout = "~/Views/Shared/_DevExtremeLayout.cshtml";
+}
+
+<div id="spreadsheet-extra">
+    <div id="btn-export-pdf"></div>
+    <form id="frm-dowload-xlsx" action='@Url.Action("Download", "Tools")' method='post' target='_blank'>
+        <input id="SpreadsheetWorkSessionId" name="SpreadsheetWorkSessionId" type="hidden" value="" />
+        <div id="btn-download-xlsx"></div>
+    </form>
+    @if (Model.IsEditable)
+    {
+        <div id="btn-save"></div>
+    }
+</div>
+
+@(Html.DevExpress()
+    .Spreadsheet("spreadsheet")
+    .Height("100%")
+    .Width("100%")
+    .DocumentRequestHandlerUrl(Url.Action("DxDocRequest", "Tools"))
+    .Open(Model.DocumentId, DocumentFormat.Xlsx, Model.ContentAccessor)
+)
+
+
+
+
+@section Styles {
+    <style>
+        #spreadsheet-extra {
+            display: inline-flex;
+            position: fixed;
+            top: 5px;
+            right: 20px;
+            z-index: 100;
+        }
+
+        main {
+            height: 100%;
+        }
+    </style>
+}
+
+@section Scripts {
+    <script type="text/javascript">
+    $(document).ready(() => {
+        $("#spreadsheet_WBC").css("height", window.innerHeight - 120);
+        $("#btn-download-xlsx").dxButton({
+            icon: "download",
+            type: "normal",
+            hint: "Descargar",
+            onClick: (e) => {
+                let spreadsheetState = spreadsheet.getSpreadsheetState();
+                $("#SpreadsheetWorkSessionId").val(spreadsheetState.SpreadsheetWorkSessionId);
+            },
+            useSubmitBehavior: true
+        });
+
+        $("#btn-export-pdf").dxButton({
+            icon: "doc",
+            type: "normal",
+            hint: "PDF",
+            onClick: (e) => spreadsheet.print("_blank")
+        });
+
+        if (!$("#btn-save")) return;
+
+        $("#btn-save").dxButton({
+            icon: "save",
+            type: "normal",
+            hint: "Guardar",
+            onClick: (e) => {
+                let spreadsheetState = spreadsheet.getSpreadsheetState();
+                $.ajax({
+                    type: 'POST',
+                    url: '@Url.Action("SaveToBytes", "Tools")',
+                    data: { spreadsheetState: spreadsheetState }
+                });
+            }
+        });
+    });
+    </script>
+}

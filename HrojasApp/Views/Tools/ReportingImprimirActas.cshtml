@@ -1,0 +1,34 @@
+﻿@{
+    Layout = "~/Views/Shared/_DevExtremeLayout.cshtml";
+}
+
+<div id="docContainer">
+    @(Html.DevExpress()
+        .WebDocumentViewer("WebDocumentViewer")
+        .Height("100%")
+        .ClientSideEvents(configure => configure.CustomizeMenuActions("OnCustomizeMenuActions"))
+        .Bind(Model.Report)
+    )
+</div>
+
+@section Scripts {
+    <script>
+        var request = "hola";
+        function setHeight() {
+            $("#docContainer").css("height", `${window.innerHeight}px`);
+        }
+        $(document).ready(_ => {
+            setHeight();
+            $(window).resize(_ => setHeight());
+        });
+        function OnCustomizeMenuActions(s, e) {
+            // Get the page navigation actions and hide them.
+            var actionPrint = e.GetById(DevExpress.Reporting.Viewer.ActionId.Print);
+
+            actionPrint.clickAction = function (arg) {
+                alert(request);
+            }
+        }
+
+    </script>
+}
